@@ -1,0 +1,148 @@
+import tkinter as tk
+from tkinter import messagebox as mb
+import MySQLdb
+
+
+
+# initialize
+root = tk.Tk()
+root.title('Text editor     ~by sreejith')
+root.geometry('500x400')
+root['bg'] = ''
+
+headfont = ("Cambria", 20, 'bold')
+bodyfont = ('arial', 13)
+bgcolor = '#fff'
+
+mysql = MySQLdb.connect('localhost', 'root', 'root', 'filelists')
+cursor = mysql.cursor()
+
+
+    
+
+def Back():
+    Home.destroy()
+    root.deiconify()
+
+    
+def signin():
+    if input1.get() == "" or input2.get() == "":
+        lblerror.config(text="Please complete the required field!", fg="red")
+
+    else:
+        try:
+            cursor.execute ("select username,password from userlist where uid = %s",(input1.get(),))
+            x=cursor.fetchmany(2)
+            
+        except Exception as e:
+            mysql.rollback()
+            mb.showerror('Error : ',e)
+
+        if x is not None and x[0][1] == input2.get():
+            uname = x[0][0]
+            global Home
+            root.withdraw()
+            Home = tk.Toplevel()
+            Home.title("Welcome %s!"%uname)
+            root.resizable(0, 0)
+            Home.geometry("500x400" )
+            lbl_home = tk.Label(Home, text="Successfully Login!", font=headfont).pack()
+            btn_back = tk.Button(Home, text='Back', command=Back).pack()
+
+        else:
+            mb.showerror("Error!", message="Incorrect Password or user ID")
+
+def createac():
+    mb.showinfo("successful!", message="Account created successfully!")
+    if input3.get != input2.get():
+        lblerror.config(text="password doesnt match", fg="red")
+
+    elif input0.get()=="" or input1.get()=="" or input2.get()=="" or input3.get()=="":
+        lblerror1.config(text="Please complete the required field!", fg="red")
+    else:
+        mb.showinfo("successful!", message="Account created successfully!")
+
+
+        
+            
+def signup():
+    global Home
+    root.withdraw()
+    Home=tk.Toplevel()
+    Home.title("Signup")
+    Home['bg']='#fff'
+    Home.geometry("500x400")
+    headfont = ("Cambria", 20, 'bold')
+    bodyfont = ('arial', 13)
+    bgcolor = '#fff'
+    
+    lb1 = tk.Label(Home, text="Sign up", font=headfont,pady=10, bg=bgcolor)
+    lb1.grid(row=1,column=2, columnspan=3)
+
+    lbuname = tk.Label(Home,text="Name", font=bodyfont, pady = 20, padx = 20,bg=bgcolor)
+    lbuname.grid(row=3,column=2)
+
+    input0= tk.Entry(Home, font =bodyfont, textvar='input0', bg=bgcolor)
+    input0.grid(row=3, column=3)
+    
+    lbuname = tk.Label(Home,text="User name", font=bodyfont, pady = 20, padx = 20,bg=bgcolor)
+    lbuname.grid(row=4,column=2)
+
+    input1= tk.Entry(Home, font =bodyfont, textvar='input1', bg=bgcolor)
+    input1.grid(row=4, column=3)
+
+    lbpass = tk.Label(Home)
+    lbpass.config(text="password", font=bodyfont, pady = 20, padx = 70, bg=bgcolor)
+    lbpass.grid(row=5,column=2)
+
+    input2= tk.Entry(Home, font =bodyfont, textvar='input2', bg=bgcolor)
+    input2.grid(row=5, column=3)
+
+    lbconpass = tk.Label(Home)
+    lbconpass.config(text="confirm password", font=bodyfont, pady = 20, padx = 70, bg=bgcolor)
+    lbconpass.grid(row=6,column=2)
+
+    input3= tk.Entry(Home, font =bodyfont, textvar='input2', bg=bgcolor)
+    input3.grid(row=6, column=3)
+
+    lblerror = tk.Label(Home, bg=bgcolor).grid(row=7, column=3)
+    lblerror1 = tk.Label(Home, bg=bgcolor).grid(row=7, column=2)
+    
+        
+        
+    btn_createac= tk.Button(Home, text="Create Account",  bg="red", fg="#fff", command=createac).grid(row=8, column=3)
+    btn_back = tk.Button(Home, text='Back', command=Back).grid(row=8, column=2)
+
+
+lb1 = tk.Label(root, text="Text editor", font=headfont,pady=10, bg=bgcolor)
+lb1.grid(row=1,column=2, columnspan=3)
+
+lbuname = tk.Label(root,text="User name", font=bodyfont, pady = 20, padx = 20,bg=bgcolor)
+lbuname.grid(row=3,column=2)
+
+input1= tk.Entry(root, font =bodyfont, textvar='input1', bg=bgcolor)
+input1.grid(row=3, column=3)
+
+lbpass = tk.Label(root)
+lbpass.config(text="password", font=bodyfont, pady = 20, padx = 70, bg=bgcolor)
+lbpass.grid(row=4,column=2)
+
+input2= tk.Entry(root, font =bodyfont, textvar='input2', bg=bgcolor)
+input2.grid(row=4, column=3)
+
+lblerror = tk.Label(root,bg=bgcolor)
+lblerror.grid(row=5, column=3)
+
+signin = tk.Button(root, text='sign in', bd=2, width=15, bg='red', fg='#fff', highlightcolor='#000', relief='ridge', command=signin)
+signin.grid(row=6, column=3, pady=20)
+
+createac = tk.Button(root, text='create account', bd=2, width=30, bg='blue', fg='#fff', command=signup)
+createac.grid(row=7, column=2, columnspan = 2,pady=30, padx=100)
+
+root.mainloop()
+
+
+
+
+
+
